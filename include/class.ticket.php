@@ -1534,6 +1534,10 @@ implements RestrictedAccess, Threadable, Searchable {
                     $t->logEvent('closed', array('status' => array($status->getId(), $status->getName())), null, 'closed');
                     $t->deleteDrafts();
                 };
+                // MSTeams Custom changes to add "ticket close" signal starts
+                $info = array('status'=>$status->getId());
+                Signal::send('ticket.close', $this, $info);  
+                // MSTeams Custom changes to add "ticket close" signal ends
                 break;
             case 'open':
                 if ($this->isClosed() && $this->isReopenable()) {
@@ -2716,6 +2720,11 @@ implements RestrictedAccess, Threadable, Searchable {
         if ($form->refer() && $cdept)
             $this->getThread()->refer($cdept);
 
+        // MSTeams custom changes for ticket Dept transfer starts
+        $signal_info = array('dept' => $dept);
+        Signal::send('ticket.transfer', $this, $signal_info );
+        // MSTeams custom changes for ticket Dept transfer ends 
+        
         //Send out alerts if enabled AND requested
         if (!$alert || !$cfg->alertONTransfer() || !$dept->getNumMembersForAlerts())
             return true; //no alerts!!
@@ -3788,7 +3797,10 @@ implements RestrictedAccess, Threadable, Searchable {
         if ($changes) {
           $this->logEvent('edited', $changes);
         }
-
+        // MSTeams custom changes to add edit signal starts
+        $info = array('changes'=>$changes);
+        Signal::send('ticket.edit', $this, $info);  
+        // MSTeams custom changes to add edit signal ends
 
         // Reselect SLA if transient
         if (!$keepSLA

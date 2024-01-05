@@ -620,6 +620,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                             );
                     $t->ticket->logNote($vars['title'], $vars['note'], $thisstaff);
                 }
+               // MSTeams Custom change for task close starts
+               $info = array('title'=>$vars['title']);
+               Signal::send('task.close', $this, $info);
+              // MSTeams Custom change for task close ends 
             };
             break;
         default:
