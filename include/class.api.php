@@ -314,9 +314,46 @@ class ApiController extends Controller {
 
     //Default response method - can be overwritten in subclasses.
     function response($code, $resp) {
-        Http::response($code, $resp);
+        Http::response($code, $resp, $contentType); // API Update $contentType var addition
         exit();
     }
+
+    // API Integration Code Start
+    function getContentType() {
+        return strtolower($_SERVER['CONTENT-TYPE']);
+    }
+    function contentTypeToFormat($content_type) {
+        # Require a valid content-type (json, xml or rfc822) for POST and PUT
+        switch($content_type) {
+            case 'application/json':
+                return "json";
+            case 'application/xml':
+                return "xml";
+            case 'message/rfc822':
+                return "email";
+            default:
+                switch(strtolower($_SERVER['REQUEST_METHOD'])) {
+                    case 'post':
+                    case 'put':
+                        $this->exerr(415, __('Unsupported data format'));
+                    case 'get':
+                    case 'delete':
+                        return "";
+                }
+            }
+    }
+
+    /**
+     * Identifies request data format using content-type and passes it on to
+     * getRequest
+    */
+    function getRequestAuto() {
+        $content_type = $this->getContentType();
+        $format = $this->contentTypeToFormat($content_type);
+        return $this->getRequest($format);
+    }
+
+    // API Integration Code ends
 }
 
 include_once "class.xml.php";
