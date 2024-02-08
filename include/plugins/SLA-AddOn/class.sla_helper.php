@@ -276,19 +276,18 @@ function AutoupdateTicketResponse($ticket_id,$sla_id,$ticket,$sla_units){
     $target = $this->slaMeasurementCalculation($ticket_id, $ticket_created,$sla_units,$sla_id);
 	$interval = $target['interval'];
 	$str1 = " Ticket Creation Date = ".$ticket_created;
-	$str11 = " First Response Date = ".$target['first_response_timeline'];
+	$str11 = " first_response_date = ".$target['first_response_timeline'];
     $str2 = " temporary_solution_timeline = ".$target['temporary_solution_timeline'];
     $str3 = " final_solution_timeline = ".$target['final_solution_timeline'];
     $message = $str1.$str11.$str2.$str3." interval".$interval;
     $title = "Debug Info #SLA - ADDON: Get Response (".$ticket_id.") ";
-    $ost->logDebug($title,$message , true);
-    //echo '<pre>'; print_r($target);
-     //echo $response_type;  
+    $ost->logDebug($title,$message , true);    
+      
     //  calculation for first response  time ans status     
     switch ($response_type) {
       case 'await':
           // -----------calculate time--------------------
-             $sql = 'SELECT id,created FROM ost_thread_entry WHERE ( TYPE="R" OR TYPE="N" ) AND thread_id="'.$ticket_id.'" ORDER BY id ASC LIMIT 1';
+             $sql = 'SELECT T.object_id , TE.created , TE.id FROM ost_thread AS T INNER JOIN ost_thread_entry AS TE ON T.id = TE.thread_id WHERE ( TYPE="R" OR TYPE="N" ) AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
             
               if (!($res = db_query($sql)) || db_num_rows($res)== 0){ // may be only status changes repsonse not added cross check with sla table 
                   $sql2 = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE ticket_id="'.$ticket_id.'" AND ticket_status="awaited" 
@@ -329,7 +328,7 @@ function AutoupdateTicketResponse($ticket_id,$sla_id,$ticket,$sla_units){
       case 'first':
           // $first_response_time = date("Y-m-d H:i:s"); 
           // -----------calculate time--------------------
-            $sql = 'SELECT id,created FROM ost_thread_entry WHERE TYPE="R" AND thread_id="'.$ticket_id.'" ORDER BY id ASC LIMIT 1';
+            $sql = 'SELECT T.object_id , TE.created , TE.id FROM ost_thread AS T INNER JOIN ost_thread_entry AS TE ON T.id = TE.thread_id WHERE TYPE="R" AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
             
               if (!($res = db_query($sql)) || db_num_rows($res)== 0){ // may be only status changes repsonse not added cross check with sla table 
                   $sql2 = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE ticket_id="'.$ticket_id.'" AND thread_type="R"   
@@ -1072,7 +1071,7 @@ function slaMeasurementCorrection($ticket_id, $createddate,$sla_units,$sla_name)
 
           $frt = "< ".$first_res_time['time']." -  ".$firstResdate;
           $ost->logDebug("Debug Info #SLA - ADDON: First Response Target Timeline",
-		  $this->showDateByserverTinezone($firstResdate) , true);             
+		  $this->showDateByserverTinezone($UpdatedfirstResTimeline) , true);             
                
                 $first_response_timeline = strtotime($firstResdate); 
                 $actual_response_time = strtotime($first_res_time['time']);

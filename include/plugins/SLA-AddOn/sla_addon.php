@@ -322,11 +322,11 @@ class SlaAddOnPlugin extends Plugin {
            $staff_id = NULL; 
         }
 		  
-		$ticket_awaited = date("Y-m-d H:i:s");
-		/* $tz = new DateTimeZone($cfg->getTimezone());  
+		// $ticket_awaited = date("Y-m-d H:i:s");
+		$tz = new DateTimeZone($cfg->getTimezone());  
 		$datetime = new DateTime($date);
 		$datetime->setTimeZone($tz);
-		$ticket_awaited = $datetime->format('Y-m-d H:i:s'); */			
+		$ticket_awaited = $datetime->format('Y-m-d H:i:s'); 		
 		$ost->logDebug('Onstatus Await',$ticket_awaited , true);
        
         // insert row in table starts

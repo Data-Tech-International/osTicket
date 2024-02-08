@@ -749,9 +749,9 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                     $answer = $clean ;
                     }   
                         
-                    $tz = new DateTimeZone($cfg->getTimezone());  
+                    // $tz = new DateTimeZone($cfg->getTimezone());  
                     $datetime = new DateTime($answer);
-                    $datetime->setTimeZone($tz);
+                    // $datetime->setTimeZone($tz);
                     echo $date = $datetime->format('m/d/y h:i:s A');                    
   
                     }else  
