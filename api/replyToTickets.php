@@ -56,8 +56,8 @@
     "ip_address" => "::1",
     "attachments" => [],
     ];
-	$staffUserName = "<username>"; # username for closing tickets - must be a valid osTicket user
-    // $staffUserName = "test.user";
+	//$staffUserName = "<username>"; # username for closing tickets - must be a valid osTicket user
+    $staffUserName = "dtiadmin";
 	$html     =  $reqjsonDecode['html'];
 	$ticketsIdList =  $reqjsonDecode['ticketIds'];
 
