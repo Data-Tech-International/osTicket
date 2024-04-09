@@ -56,7 +56,7 @@ class SlaAddOnPluginConfig extends PluginConfig {
 				 'validator' => 'number',
                 'configuration' => array(
                     'size'   => 10,
-                    'length' => 2
+                    'length' => 5
                 ),
             )),
 			 'temporary-solution-time'          => new TextboxField(array(
@@ -64,7 +64,7 @@ class SlaAddOnPluginConfig extends PluginConfig {
                  'validator' => 'number',
 				'configuration' => array(
                     'size'   => 10,
-                    'length' => 2
+                    'length' => 5
                 ),
             )),
 			'final-solution-time'          => new TextboxField(array(
@@ -72,7 +72,7 @@ class SlaAddOnPluginConfig extends PluginConfig {
                  'validator' => 'number',
 				'configuration' => array(
                     'size'   => 10,
-                    'length' => 2
+                    'length' => 5
                 ),
             )),
             /*'teams-regex-subject-ignore' => new TextboxField([
