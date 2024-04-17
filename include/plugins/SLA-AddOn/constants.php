@@ -3,7 +3,8 @@
       define('SLA_ADDON_TABLE', TABLE_PREFIX . 'sla_addon');
       define('SLA_ADDON_RESPONSE_ENTRY_TABLE', TABLE_PREFIX . 'sla_addon_reponse_entry');
       define('STATUS_TABLE', TABLE_PREFIX . 'ticket_status');
-      
+      define('THREAD_TABLE', TABLE_PREFIX . 'thread');
+      define('THREAD_ENTRY_TABLE', TABLE_PREFIX . 'thread_entry');
       
       // STATUS CONSTANT
       define('STATUS_AWAITED','Awaiting response');

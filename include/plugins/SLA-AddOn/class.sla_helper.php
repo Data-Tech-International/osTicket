@@ -12,13 +12,7 @@ class SlaHelper extends VerySimpleModel {
     protected $_config;
     protected $_schedule;
 	
-function check_overdue($ticket_id){
- $sql = 'SELECT ticket_id,isoverdue FROM ost_ticket WHERE ticket_id="'.$ticket_id.'"' ;
-    $rs = db_query($sql);
-    $result = db_fetch_array($rs);
-    return $isoverdue = $result['isoverdue'];     
-}
- function getScheduleId($sla_id){
+function getScheduleId($sla_id){
     $sql_sla = "SELECT schedule_id FROM ".TABLE_PREFIX."sla WHERE id = ".$sla_id;
     $rs = db_query($sql_sla);
     $result = db_fetch_array($rs);    
@@ -287,7 +281,7 @@ function AutoupdateTicketResponse($ticket_id,$sla_id,$ticket,$sla_units){
     switch ($response_type) {
       case 'await':
           // -----------calculate time--------------------
-             $sql = 'SELECT T.object_id , TE.created , TE.id FROM ost_thread AS T INNER JOIN ost_thread_entry AS TE ON T.id = TE.thread_id WHERE ( TYPE="R" OR TYPE="N" ) AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
+             $sql = 'SELECT T.object_id , TE.created , TE.id FROM `'.THREAD_TABLE.'` AS T INNER JOIN `'.THREAD_ENTRY_TABLE.'` AS TE ON T.id = TE.thread_id WHERE ( TYPE="R" OR TYPE="N" ) AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
             
               if (!($res = db_query($sql)) || db_num_rows($res)== 0){ // may be only status changes repsonse not added cross check with sla table 
                   $sql2 = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE ticket_id="'.$ticket_id.'" AND ticket_status="awaited" 
@@ -328,7 +322,7 @@ function AutoupdateTicketResponse($ticket_id,$sla_id,$ticket,$sla_units){
       case 'first':
           // $first_response_time = date("Y-m-d H:i:s"); 
           // -----------calculate time--------------------
-            $sql = 'SELECT T.object_id , TE.created , TE.id FROM ost_thread AS T INNER JOIN ost_thread_entry AS TE ON T.id = TE.thread_id WHERE TYPE="R" AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
+            $sql = 'SELECT T.object_id , TE.created , TE.id FROM `'.THREAD_TABLE.'` AS T INNER JOIN `'.THREAD_ENTRY_TABLE.'` AS TE ON T.id = TE.thread_id WHERE TYPE="R" AND T.object_id = "'.$ticket_id.'" ORDER BY TE.id ASC LIMIT 1';
             
               if (!($res = db_query($sql)) || db_num_rows($res)== 0){ // may be only status changes repsonse not added cross check with sla table 
                   $sql2 = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE ticket_id="'.$ticket_id.'" AND thread_type="R"   
@@ -620,14 +614,14 @@ function AutoupdateTicketResponse($ticket_id,$sla_id,$ticket,$sla_units){
 */ 
   function SlaPauseOnAwait($ticket_id){
           
-    $sql_await = 'SELECT id,created FROM ost_sla_addon WHERE ticket_status="awaited" AND ticket_id="'.$ticket_id.'" ORDER BY id DESC LIMIT 1';
+    $sql_await = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE ticket_status="awaited" AND ticket_id="'.$ticket_id.'" ORDER BY id DESC LIMIT 1';
     $rs1 = db_query($sql_await);
     $result_await = db_fetch_array($rs1);
      
     $awaited_id = $result_await['id'];
     $awaited_time = $result_await['created'];
 
-    $sql_open = 'SELECT id,created FROM ost_sla_addon WHERE 
+    $sql_open = 'SELECT id,created FROM `'.SLA_ADDON_TABLE.'` WHERE 
     ticket_status="open" AND ticket_id="'.$ticket_id.'" AND id > "'.$awaited_id.'"
     ORDER BY id ASC LIMIT 1';
     $rs2 = db_query($sql_open);
